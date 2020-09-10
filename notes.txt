@@ -1,0 +1,92 @@
+9/9/20 - LECTURE - Testing the Backend
+
+Last lecture of Web Development
+Continue to research and learn, but take it slow
+Don't try to learn it all at once
+
+Unit Tests vs Integration Tests
+    Unit Tests
+        -- Testing small pieces of code like pure functions and utility functions
+        -- Same input === same output
+
+    Integration Tests
+        -- Testing how those functions are working together as a whole
+        -- Endpoints, middleware stacks, etc
+
+Automated Integration Testing
+    -- Writing code to test endpoints and middleware
+    -- Like what we do with Insomnia, but automatic
+
+It's more important to write Integrations Tests than Unit Tests
+    -- If you must choose, choose Integration
+
+Unit Testing tests small isolated pieces, not how they work together
+
+It's more important to know if everything is working together
+    -- So, Integration Testing is more important that Unit testing
+
+Jest normally runs in a browser environment
+    -- Switch the configuration in the package.json to switch it to node environment
+
+For Unit Tests:
+    -- Keep the test files next to the code files
+
+For Integration Tests:
+    -- Keep the test files in a __tests__ directory
+
+For Integration Tests we need to call endpoints
+    -- we'll use supertest npm module for this
+    -- it's a devDependency
+    -- it's like axios but with more built in
+
+When we call supertest in a test, the server will run and stay running even after the test is done
+    -- we don't want the server to run when we call npm test
+    -- we can fix this by splitting the server file into multiple files
+        -- one holds all the server info (defines the server)
+            -- server.js
+        -- the other holds the server.listen function and the port variable (starts the server)
+            -- index.js
+
+Supertest sends back a whole lot of info as an object
+    -- some of it is super useful
+        -- req headers
+        -- status code
+        -- All the stuff we could get from Insomnia
+
+Questions to Ask When Testing Endpoints:
+    -- Does it return the expected status code?
+    -- Does it return the expected data format?
+        -- JSON, XML, HTML, etc
+    -- Does it return the expected data?
+
+For Endpoints that Access the Database:
+    -- They take longer bc Database
+
+Code Coverage:
+    -- each line of code is tested / triggered by a test at some point
+
+When we add a new hobbit, it messes up previous tests because now there's more hobbits in the Database
+    -- we can fix that by reseeding the database before each test
+    -- that will make sure the tests are always running on the same database
+
+    -- it's good to use a test database for this purpose
+        -- then the user data is not getting deleted
+
+To Migrate or Seed Testing Database
+    npx knex migrate:latest --env=testing
+    npx knex seed:run --env=testing
+
+For running the database:
+    -- in config.js, 
+        module.exports = knex(knexfile.development)
+        -- specify the environment
+    -- Use environment variables to specify which environment it is
+
+    -- Use cross-env npm module for this purpose
+        -- can define env vars in package.json
+
+        -- in config.js
+            module.exports = knex(knexfile[process.env.NODE_ENV])
+
+    -- now we have a development database and a testing database
+
